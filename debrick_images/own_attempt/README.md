@@ -1,4 +1,14 @@
 
+# Writing to SD
+
+	sudo dd if=debrick_own.img of=/dev/sdb bs=1M oflag=sync
+
+# Testing
+
+- battery unplugged
+- sd card inserted
+- `omapboot.py -b` started
+- plug cable in
 
 # Sources
 
