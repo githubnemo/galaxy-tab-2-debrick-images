@@ -28,18 +28,10 @@
 # PIT 0x4400
 # x-loader (MLO) 0x20000
 # u-boot (Sbl.bin) 0x1800000
-# boot.img 0x2400000
-# recovery.img 0x2C00000
 
-#MLO="../../OMAPFlash/div. models/Targets/Projects/espresso/MLO" # doesn't boot at all
 MLO="../../firmware/GT-P5100_DBT_1/MLO"
 SBL="../../espresso-sbl/Sbl_uart_external_boot/Sbl.bin"
-#REC="../../OMAPFlash/for_P5113/recovery.img"
-REC="../../firmware/GT-P5100_DBT_1/platform/recovery.img"
 PIT="../../firmware/pit/GTab2 P5100 16G.pit"
-#BOO="../../firmware/P5100XXDMI1_P5100XSADMI1_XSA/Firmware/unpacked/boot.img"
-#BOO="../../firmware/GT-P5100_DBT_1/platform/boot.img"
-BOO="$REC"
 
 OUT="debrick_own.img"
 
@@ -70,8 +62,6 @@ sgdisk -a 1 \
 dd if="$MLO" of="$OUT" seek=$((0x20000)) oflag=seek_bytes conv=notrunc
 dd if="$PIT" of="$OUT" seek=$((0x4400)) oflag=seek_bytes conv=notrunc
 dd if="$SBL" of="$OUT" seek=$((0x1800000)) oflag=seek_bytes conv=notrunc
-dd if="$REC" of="$OUT" seek=$((0x2C00000)) oflag=seek_bytes conv=notrunc
-dd if="$BOO" of="$OUT" seek=$((0x2400000)) oflag=seek_bytes conv=notrunc
 
 # reduce size to initial 50MiB for now
 truncate -s 50MiB "$OUT"
