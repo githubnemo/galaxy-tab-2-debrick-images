@@ -1,39 +1,4 @@
 
-# Dealing with low battery
-
-The boot loader has a cutoff voltage of 3.45V - if the battery is below that
-voltage the boot process will reboot before loading the kernel or recovery.
-While boot-looping the battery will charge, albeit slowly. Once the threshold
-is crossed, the boot process continues but the charging voltage does not
-increase, i.e. if your device is stuck and the display turns on it will
-decharge and you're stuck in a boot-loop again soon enough.
-
-If connected to an UART-connector you can interrupt the boot process (hit
-enter when prompted with the auto-timeout). You will drop into the boot loader
-shell and when entering 'usb' you will be in ODIN download mode. Pressing
-volume-down will turn off the device but it will continue to charge.
-
-# Terminology
-
-When reading this you will stumble upon various terms that might you
-might raise your eyebrows on. I will try to list and explain them in this
-section.
-
-## PIT
-
-The PIT is the partition table of the internal flash (eMMC). If you would be
-able to mount the eMMC in your local system, you would see ~12 partitions.  It
-is also a file that is present on the eMMC for reasons I don't know but I
-suspect that one of the boot loaders (MLO, Sbl or potentially something
-different) need this to refer to partitions without understanding the
-partition table of the storage device itself.
-
-These files are often called `<make> <model> <size>.pit`, e.g.
-`GTab2 P5100 16G.pit` and are, sadly, seldomly included in firmware dumps.
-
-You can find a 16GB PIT in the `pit` folder.
-
-
 # Goals
 
 I have a bricked GT-P5100 with a likely eMMC fault and I want to revive this
@@ -42,13 +7,16 @@ device. If possible, I just want to re-flash the eMMC and everything's fine
 because the eMMC is bad, I want to be able to boot everything from SD-card
 (creating a bootable SD-card firmware image from scratch is the goal).
 
+**Note:** if your device is low on battery you may experience issues when
+booting. See [Dealing with low battery][] for details.
+
 ## Get the device into ODIN mode
 
 ### With UART adapter
 
 Needed:
 
-- working UART cable + serial USB adapter
+- working [UART adapter][] + serial USB adapter
 - minimal sd card image with
 	* MLO
 	* Sbl
@@ -98,12 +66,74 @@ be used with external SD card.
 
 TODO
 
-# UART adapter
 
-Pins 20 (RX) and 21 (TX) of the dock connector are for serial (115200 baud 8n1)
-communication. If you flash one of the Sbl UART boot loaders from
-[here](https://github.com/mspitteler/espresso-sbl) you will see helpful
-debugging messages on these pins.
+
+
+# Dealing with low battery
+
+The boot loader has a cutoff voltage of 3.45V - if the battery is below that
+voltage the boot process will reboot before loading the kernel or recovery.
+While boot-looping the battery will charge, albeit slowly. Once the threshold
+is crossed, the boot process continues but the charging voltage does not
+increase, i.e. if your device is stuck and the display turns on it will
+decharge and you're stuck in a boot-loop again soon enough.
+
+If connected to an UART-connector you can interrupt the boot process (hit
+enter when prompted with the auto-timeout). You will drop into the boot loader
+shell and when entering 'usb' you will be in ODIN download mode. Pressing
+volume-down will turn off the device but it will continue to charge.
+
+
+# Terminology
+
+When reading this you will stumble upon various terms that might you
+might raise your eyebrows on. I will try to list and explain them in this
+section.
+
+## MLO
+
+MLO, or x-loader in ODIN/Heimdall terminology, is the primary boot loader
+and therefore critical to the boot process. It loads the Sbl.
+It is signed by Samsung (citation needed) and not therefore not replaceable.
+
+## Sbl
+
+Means probably something like "Secondary boot loader". It is probably a
+variant of [u-boot](https://github.com/u-boot/u-boot) and responsible for
+loading the Linux kernel, the recovery or ODIN mode, depending on pressed
+keys.
+
+## PIT
+
+The PIT is the partition table of the internal flash (eMMC). If you would be
+able to mount the eMMC in your local system, you would see ~12 partitions.  It
+is also a file that is present on the eMMC for reasons I don't know but I
+suspect that one of the boot loaders (MLO, Sbl or potentially something
+different) need this to refer to partitions without understanding the
+partition table of the storage device itself.
+
+These files are often called `<make> <model> <size>.pit`, e.g.
+`GTab2 P5100 16G.pit` and are, sadly, seldomly included in firmware dumps.
+
+You can find a 16GB PIT in the `firmware/pit` folder.
+
+## UART
+
+[Universal asynchronous receiver/transmitter](https://en.wikipedia.org/wiki/UART)
+is a very common way to get debug information in the boot process of a device.
+It usually features a receive (RX), transmit (TX) and ground (GND) line.
+Sometimes, if the device is not powered on its own, also a voltage (VCC) line.
+How to build an adapter so you can connect to the UART connection of the
+Galaxy Tab 2 is documented in [UART Adapter][].
+
+
+
+# UART Adapter
+
+Pins 20 (RX) and 21 (TX) of the dock connector ([source](https://forum.xda-developers.com/t/samsung-galaxy-tab-30-pin-dock-connector-pinout.1118986/))
+are for serial (115200 baud 8n1) communication. If you flash one of the Sbl
+UART boot loaders from [here](https://github.com/mspitteler/espresso-sbl) you
+will see helpful debugging messages on these pins.
 
 Modifying old iPad connectors (peripheral connectors have all 30 pins available)
 is a way to get these cables. The pinout for a USB + UART connector can be found
@@ -111,12 +141,21 @@ is a way to get these cables. The pinout for a USB + UART connector can be found
 
 TODO insert setup photo here
 
+To read the now available pins (RX/TX) you will need a USB to serial adapter
+such as ones based on FT232R or simply an Arduino. If you don't know how
+to do this, you will need to do your research but it is not complicated!
+
+If you use a USB-serial adapter based on FT232R you can then use, for example,
+`picocom` to read and write to the UART:
+
+	picocom -b 115200 /dev/ttyUSB0
+
 
 # Sources
 
 ## Documents
 
-- [UART pinout](https://forum.xda-developers.com/t/samsung-galaxy-tab-30-pin-dock-connector-pinout.1118986/)
+
 
 ## Firmware
 
