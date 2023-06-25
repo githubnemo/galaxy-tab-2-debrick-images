@@ -13,6 +13,27 @@ enter when prompted with the auto-timeout). You will drop into the boot loader
 shell and when entering 'usb' you will be in ODIN download mode. Pressing
 volume-down will turn off the device but it will continue to charge.
 
+# Terminology
+
+When reading this you will stumble upon various terms that might you
+might raise your eyebrows on. I will try to list and explain them in this
+section.
+
+## PIT
+
+The PIT is the partition table of the internal flash (eMMC). If you would be
+able to mount the eMMC in your local system, you would see ~12 partitions.  It
+is also a file that is present on the eMMC for reasons I don't know but I
+suspect that one of the boot loaders (MLO, Sbl or potentially something
+different) need this to refer to partitions without understanding the
+partition table of the storage device itself.
+
+These files are often called `<make> <model> <size>.pit`, e.g.
+`GTab2 P5100 16G.pit` and are, sadly, seldomly included in firmware dumps.
+
+You can find a 16GB PIT in the `pit` folder.
+
+
 # Goals
 
 I have a bricked GT-P5100 with a likely eMMC fault and I want to revive this
@@ -31,12 +52,47 @@ Needed:
 - minimal sd card image with
 	* MLO
 	* Sbl
-	* partition table (on disk and applied)
+	* partition table (on disk as data and applied to the image)
 
 The script to create such an image can be found in
 `./debrick_images/minimal_uart`.
 
 ### Without UART adapter
+
+Needed:
+
+- working USB cable for the Galaxy Tab
+- recovery df card image with
+	* MLO
+	* Sbl
+	* partition table (on disk as data and applied to the image)
+	* optional: recovery image
+
+The script to create such an image can be found in
+`./debrick_images/minimal_recovery`.
+
+The process to get here is a bit more involved due to a bug I don't really
+understand. In essence: You need to unplug the USB cable in the right moment
+to transfer the payload to boot from SD card but not to land in the 'charger'
+payload which hangs since it cannot access the eMMC.
+
+1. Flash the SD card with the image of `./debrick_images/minimal_uart`
+   `dd if=img of=<sd card> bs=1M oflag=sync`
+2. Start `omapboot.py -b`
+3. Press Vol Up + Power on the tablet (shortcut for ODIN mode)
+4. Plug in USB cable
+5. Wait for `omapboot` to show `Giving x-loader a chance to come up..`
+	(~two dots are enough wait)
+6. Unplug USB cable
+7. Wait until Samsung Galaxy boot logo and (a bit after that) ODIN mode
+   appears on the screen
+
+The same process can be done without the key combination to enter the recovery
+image since the `minimal_uart` SD card image sets the recovery image as its
+boot payload. From the recovery you can connect via `adb` and explore the
+system. For me the eMMC was not listed as a block device, suggesting that it
+was not even initializing properly anymore. In that case the device can only
+be used with external SD card.
 
 ## Create a sd-card bootable firmware image from scratch
 
