@@ -15,6 +15,14 @@ https://github.com/LukasTomek/omapboot all this would not work.
 **Note:** if your device is low on battery you may experience issues when
 booting. See [Dealing with low battery][] for details.
 
+## Get necessary files
+
+This repo gives you scripts that create SD bootable images from firmware
+images. You will need a bit of luck to get all the correct parts but the
+[Firmware][] section lists a few sources you can get started on.
+
+See the specific debrick image script README files for details.
+
 ## Get the device into ODIN mode
 
 ### With UART adapter
@@ -204,11 +212,8 @@ If you use a USB-serial adapter based on FT232R you can then use, for example,
 
 # Sources
 
-## Documents
-
-
-
 ## Firmware
 
+- PIT files are from [here][pit1]
 - [`GT-P5113_XAR_1_20131213093640_j4yd9st9cc_fac.zip`](https://sfirmware.com/downloads-file/24603/GT-P5113_XAR_1_20131213093640_j4yd9st9cc_fac)
 - [`GT-P5100_DBT_1_20140813225430_nkfxle5pbd_fac.zip`](https://sfirmware.com/downloads-file/24553/GT-P5100_DBT_1_20140813225430_nkfxle5pbd_fac)

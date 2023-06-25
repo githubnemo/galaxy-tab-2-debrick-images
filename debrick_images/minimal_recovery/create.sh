@@ -34,8 +34,8 @@ set -o pipefail
 # boot.img 0x2400000
 # recovery.img 0x2C00000
 
-MLO="../../firmware/GT-P5100_DBT_1/MLO"
-SBL="../../espresso-sbl/Sbl_uart_external_boot/Sbl.bin"
+MLO="../../firmware/GT-P5100_DBT_1/bootloader/MLO"
+SBL="../../firmware/espresso-sbl/Sbl_uart_external_boot/Sbl.bin"
 REC="../../firmware/GT-P5100_DBT_1/platform/recovery.img"
 PIT="../../firmware/pit/GTab2 P5100 16G.pit"
 BOO="$REC"

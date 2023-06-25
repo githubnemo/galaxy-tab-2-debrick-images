@@ -2,6 +2,15 @@
 
 Make sure you have the correct files needed to create this image.
 
+The script needs the following payloads and expects them in the paths
+noted in parenthesis.
+
+- MLO (`../../firmware/GT-P5100_DBT_1/MLO`)
+- SBL (`../../firmware/espresso-sbl/Sbl_uart_external_boot/Sbl.bin`)
+- Recovery (`../../firmware/GT-P5100_DBT_1/platform/recovery.img`)
+- PIT (`../../firmware/pit/GTab2 P5100 16G.pit`)
+
+If all files are present, you can execute the script
 
 	./create.sh
 
@@ -11,14 +20,8 @@ Make sure you have the correct files needed to create this image.
 
 # Testing
 
-- battery unplugged
 - sd card inserted
 - `omapboot.py -b` started
 - plug cable in
+- optionally: power on device (if not already on / boot looping)
 
-# Sources
-
-## Files
-
-- PIT files are from [here][pit1]
-- OMAPFlash for MLO and recovery image [here](https://forum.xda-developers.com/t/guide-gt-i9100g-repair-totally-sleep-dead-boot-mode-via-usb.1701471/post-35127581)
