@@ -7,6 +7,11 @@ device. If possible, I just want to re-flash the eMMC and everything's fine
 because the eMMC is bad, I want to be able to boot everything from SD-card
 (creating a bootable SD-card firmware image from scratch is the goal).
 
+**Dependencies**: This work heavily depends on the great work done at
+https://github.com/mspitteler/espresso-sbl to create a SBL that supports
+booting from SD card. Also without the (modified) `omapboot` from
+https://github.com/LukasTomek/omapboot all this would not work.
+
 **Note:** if your device is low on battery you may experience issues when
 booting. See [Dealing with low battery][] for details.
 
@@ -16,6 +21,7 @@ booting. See [Dealing with low battery][] for details.
 
 Needed:
 
+- `omapboot` tool downloaded
 - working [UART adapter][] + serial USB adapter
 - minimal sd card image with
 	* MLO
@@ -25,10 +31,55 @@ Needed:
 The script to create such an image can be found in
 `./debrick_images/minimal_uart`.
 
+To get into ODIN via UART you do the following:
+
+1. Connect the tablet to your computer via USB, connect the USB-serial adapter
+to the UART RX/TX lines
+2. start a serial communication program such as `picocom`
+3. insert SD card with image into tablet
+4. start `omapboot.py -b`
+5. Watch output in serial communication program - there should be a line
+   saying `"Autoboot (1 seconds) in progress, press any key to stop ."` -
+   press enter here, you will drop into a shell
+6. Enter "usb" and press enter
+
+Now the typical ODIN download screen should show up.
+
+Here's a (shortened) example of the whole boot process:
+
+```
+Texas Instruments X-Loader 1.41 (Apr 16 2012 - 11:13:29)
+Starting OS Bootloader from MMC/SD1 ...
+
+...
+
+Secondary Bootloader v3.1 version.
+Copyright (C) 2011 System S/W Group. Samsung Electronics Co., Ltd.
+Board: GT-P5110 REV 02-REAL / Dec 17 2013 00:27:05
+
+booting code=0x93035e41
+===== PARTITION INFORMATION =====
+ ID         : X-loader (0x1)
+ DEVICE     : MMC
+ FIRST UNIT : 0
+ NO. UNITS  : 0
+...
+
+Autoboot (1 seconds) in progress, press any key to stop .
+
+Autoboot aborted..
+SBL> usb
+
+==> Welcome to ESPRESSO_WIFI!
+==> Entering usb download mode..
+...
+```
+
 ### Without UART adapter
 
 Needed:
 
+- `omapboot` tool downloaded
 - working USB cable for the Galaxy Tab
 - recovery df card image with
 	* MLO
