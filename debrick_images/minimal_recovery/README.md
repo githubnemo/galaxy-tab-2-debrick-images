@@ -12,7 +12,7 @@ noted in parenthesis.
 
 If all files are present, you can execute the script
 
-	./create.sh
+	bash ./create.sh
 
 # Writing to SD
 

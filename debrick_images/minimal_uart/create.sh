@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -eu
+set -o pipefail
+
 # info: sector size is 512 byte
 
 # Partition table:
@@ -29,8 +32,8 @@
 # x-loader (MLO) 0x20000
 # u-boot (Sbl.bin) 0x1800000
 
-MLO="../../firmware/GT-P5100_DBT_1/MLO"
-SBL="../../espresso-sbl/Sbl_uart_external_boot/Sbl.bin"
+MLO="../../firmware/GT-P5100_DBT_1/bootloader/MLO"
+SBL="../../firmware/espresso-sbl/Sbl_uart_external_boot/Sbl.bin"
 PIT="../../firmware/pit/GTab2 P5100 16G.pit"
 
 OUT="debrick_own.img"

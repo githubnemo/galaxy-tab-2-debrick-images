@@ -1,15 +1,26 @@
+# Creating the image
+
+Make sure you have the correct files needed to create this image.
+
+The script needs the following payloads and expects them in the paths
+noted in parenthesis.
+
+- MLO (`../../firmware/GT-P5100_DBT_1/MLO`)
+- SBL (`../../firmware/espresso-sbl/Sbl_uart_external_boot/Sbl.bin`)
+- PIT (`../../firmware/pit/GTab2 P5100 16G.pit`)
+
+If all files are present, you can execute the script
+
+	bash ./create.sh
 
 # Writing to SD
 
 	sudo dd if=debrick_own.img of=/dev/sdb bs=1M oflag=sync
 
-# Sources
+# Testing
 
-## Files
-
-- PIT files are from [here][pit1]
-- GT-P5100 firmware from [here][firmware1]
-
-[pit1]: https://forum.xda-developers.com/t/pit-pit-files-for-all-samsung-tab-2-tablets-updated-op.2552155/post-48907965
-[firmware1]: https://sfirmware.com/downloads-file/24553/GT-P5100_DBT_1_20140813225430_nkfxle5pbd_fac
+- sd card inserted
+- `omapboot.py -b` started
+- plug cable in
+- optionally: power on device (if not already on / boot looping)
 
