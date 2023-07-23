@@ -14,6 +14,54 @@ The image can then be mounted:
 
 	sudo mount -o loop efs.img mount_dir
 
+# EFS ext4 partition
+
+Output of `tune2fs -l`:
+
+```
+tune2fs 1.46.5 (30-Dec-2021)
+Filesystem volume name:   <none>
+[...]
+Filesystem magic number:  0xEF53
+Filesystem revision #:    1 (dynamic)
+Filesystem features:      has_journal resize_inode filetype extent sparse_super large_file
+Filesystem flags:         unsigned_directory_hash
+Default mount options:    (none)
+Filesystem state:         clean
+Errors behavior:          Panic
+Filesystem OS type:       Linux
+Inode count:              1280
+Block count:              5120
+Reserved block count:     0
+Free blocks:              3975
+Free inodes:              1241
+First block:              0
+Block size:               4096
+Fragment size:            4096
+Reserved GDT blocks:      7
+Blocks per group:         32768
+Fragments per group:      32768
+Inodes per group:         1280
+Inode blocks per group:   80
+Last mount time:          Sun Jul 23 20:11:47 2023
+Last write time:          Sun Jul 23 21:19:38 2023
+Mount count:              213
+Maximum mount count:      -1
+Last checked:             Thu Jan  1 01:00:00 1970
+Check interval:           0 (<none>)
+Lifetime writes:          305 MB
+Reserved blocks uid:      0 (user root)
+Reserved blocks gid:      0 (group root)
+First inode:              11
+Inode size:	          256
+Required extra isize:     28
+Desired extra isize:      28
+Journal inode:            8
+Default directory hash:   tea
+Journal backup:           inode blocks
+```
+
+
 # EFS structure
 
 EFS is an ext4 partition. The files on this partition are:
