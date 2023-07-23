@@ -118,8 +118,24 @@ echo "Creating image"
 truncate -s 20M "$efs_image"
 mkfs.ext4 "$efs_image"
 
+# Remove huge_file and 64 bit extension
+resize2fs -s "$efs_image"
+e2fsck -f "$efs_image"
+tune2fs -O '^huge_file' "$efs_image"
+
+set +e
+e2fsck -f "$efs_image"
+
+# Error code 1 is fine, we've corrected errors!
+if [ $? -gt 1 ]; then
+	exit 1
+fi
+set -e
+
+
 sudo mount -o loop "$efs_image" "$efs_mount"
+
 sudo tar -c -C "$efs_dir" . | sudo tar -x -C "$efs_mount"
 
 echo "Everything done."
-echo "EFS image: new_efs.img"
+echo "EFS image: $efs_image"
