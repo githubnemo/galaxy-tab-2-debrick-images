@@ -89,6 +89,7 @@ Needed:
 
 - `omapboot` tool downloaded
 - working USB cable for the Galaxy Tab
+- charged Galaxy Tab (battery should have at least 3.6V)
 - recovery df card image with
 	* MLO
 	* Sbl
@@ -123,7 +124,39 @@ be used with external SD card.
 
 ## Create a sd-card bootable firmware image from scratch
 
-TODO
+This section is not as well documented as it could be.
+
+Needed:
+
+- `omapboot` tool downloaded
+- working USB cable for the Galaxy Tab
+- charged Galaxy Tab (battery should have at least 3.7V)
+- SD card with samsung firmware image
+
+The script to create such an image can be found in
+`./debrick_images/samsung_android`.
+
+The boot process is as involved as
+[booting into recovery without UART](#without-uart-adapter) in that you need
+to plug the USB cable in the right moment. Here's what you need to do step
+by step:
+
+1. Flash the SD card with the image of `./debrick_images/samsung_android`
+   `dd if=debrick_own.img of=<sd card> bs=1M oflag=sync`
+
+Note that the scripts require 'dense' firmware images, in contrast to the
+'sparse' images you may find regularly on the internet. This is not a
+problem and the scripts will warn you about. You simply need to convert
+the sparse image files to dense image files using the `simg2img` utility.
+
+
+2. Start `omapboot.py -b`
+3. Plug in USB cable
+4. Wait for `omapboot` to show `Giving x-loader a chance to come up..`
+	(~two dots are enough wait)
+5. Unplug USB cable
+7. Wait until Samsung Galaxy boot logo appears
+
 
 
 

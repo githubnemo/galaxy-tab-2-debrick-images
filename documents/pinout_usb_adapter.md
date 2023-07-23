@@ -1,6 +1,16 @@
 
 numbering according to `gxtabpinout.jpg`.
 
+
+# Depiction of pinout
+
+		    BACKSIDE OF TABLET
+
+
+		||||||||||||||||||||||||||||||
+	   30                            1
+
+
 # Normal
 
 | pin | wired | function |
