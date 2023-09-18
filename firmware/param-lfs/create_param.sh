@@ -53,8 +53,34 @@ fake_image "$tempdir/logo_espresso10.jpg" 695x110 "<insert vendor logo here> (po
 fake_image "$tempdir/nps_fail.jpg" 405x275 "Firmware upgrade encountered an issue. Please select recovery mode in Kies & try again."
 fake_image "$tempdir/nps_fail_chn.jpg" 405x275 "Firmware upgrade encountered an issue. Please select recovery mode in Kies & try again."
 
+# explicitly name all the files because order matters
+# when allocating ids. it also makes comparison to the original
+# files easier
 "$scriptdir"/../../tools/j4fs/j4fs.py \
-	create -o "param.j4fs" -p 2048 -b 131072 "$tempdir"/*
+	create -o "param.j4fs" -p 2048 -b 131072 \
+		"$tempdir"/ani_upload_1_kernel_panic.jpg \
+		"$tempdir"/logo_espresso7.jpg \
+		"$tempdir"/logo_espresso10.jpg \
+		"$tempdir"/dummy.bin \
+		"$tempdir"/ani_upload_6_hsic_disconnected.jpg \
+		"$tempdir"/ani_upload_4_watchdog_reset.jpg \
+		"$tempdir"/charging_10.jpg \
+		"$tempdir"/charging_7.jpg \
+		"$tempdir"/ani_upload_4_power_reset.jpg \
+		"$tempdir"/ani_upload_5_user_panic.jpg \
+		"$tempdir"/ani_upload_4_hardware_reset.jpg \
+		"$tempdir"/nps_fail_chn.jpg \
+		"$tempdir"/ani_upload_3_forced_upload.jpg \
+		"$tempdir"/ani_upload_2_cp_crash.jpg \
+		"$tempdir"/ani_upload_5_user_fault.jpg \
+		"$tempdir"/nps_fail.jpg \
+		"$tempdir"/ani_upload_4_unknown_reset.jpg \
+		"$tempdir"/nps_status \
+		"$tempdir"/debug_level.inf \
+		"$tempdir"/sw_sel \
+		"$tempdir"/movinand_checksum_pass \
+		"$tempdir"/movinand_checksum_done
+
 
 echo "Created param.j4fs"
 echo "Removing temporary $tempdir"
