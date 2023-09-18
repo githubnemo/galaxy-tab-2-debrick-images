@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 import argparse, struct, sys, os
 
+J4FS_MAX_FILE_NUM = 256
+
 S_INODE = '8I128s'
+S_MST = f'5I{J4FS_MAX_FILE_NUM}I3I'
 
 J4FS_MAGIC = 0x87654321
 J4FS_FILE_MAGIC = 0x12345678
@@ -99,7 +102,37 @@ def j4fs_extract(fp):
 
         write_file(filename, length, fp)
 
+def j4fs_dump_header(fp):
+    fp.seek(0)
+    mst_bytes = fp.read(struct.calcsize(S_MST))
+    mst = struct.unpack(S_MST, mst_bytes)
+    (
+     magic,
+     from_addr,
+     to_addr,
+     end,
+     copyed,
+     *offset,
+     offset_number,
+     status,
+     rw_start,
+    ) = mst
+    s = f"""
+MST:
+magic: {magic:x}
+from: {from_addr:x}, to: {to_addr:x}
+end: {end:x}, copyed: {copyed:x}
+offset: {offset}
+offset_number: {offset_number:x}
+status: {status:x}
+rw_start: {rw_start:x}
+    """
+    print(s)
+
+
 def j4fs_dump(fp):
+    j4fs_dump_header(fp)
+
     # first ro entry is past mst
     link = args.block_size
     inode = None
@@ -199,7 +232,7 @@ def j4fs_write_files(fp, files, block_size, page_size):
     for i, filepath in enumerate(files):
         link = j4fs_create_file_entry(
             fp,
-            inode_id=10 + i, # mimic ids of Samsung Galaxy Tab param fs
+            inode_id=11 + i, # mimic ids of Samsung Galaxy Tab param fs
             filepath=filepath,
             page_size=page_size,
             is_last=(i+1) == len(files),
@@ -207,16 +240,37 @@ def j4fs_write_files(fp, files, block_size, page_size):
         fp.seek(link)
 
 
-def j4fs_write_header(fp):
-    magic_bytes = struct.pack('I', J4FS_MAGIC)
-    fp.write(magic_bytes)
+def j4fs_write_header(
+    fp,
+    from_addr=0,
+    to_addr=0,
+    end=0,
+    copyed=0,
+    offset=None,
+    offset_number=0,
+    status=0x1230000,
+    rw_start=0xb0000,
+):
+    """All default values are taken from the Galaxy Tab 2.
+    These are most certainly different for other devices.
+    """
+    if offset is None:
+        offset = [0] * J4FS_MAX_FILE_NUM
 
-    # taken from Samsung Galaxy Tab 2 param partition
-    # i don't know what this does.
-    # FIXME this might need to be different for other
-    # images!
-    fp.seek(0x41A)
-    fp.write(bytes([0x23, 0x01, 0x00, 0x00, 0x0b, 0x00]))
+    header_data = (
+        J4FS_MAGIC,
+        from_addr,
+        to_addr,
+        end,
+        copyed,
+        *offset,
+        offset_number,
+        status,
+        rw_start,
+    )
+
+    header_bytes = struct.pack(S_MST, *header_data)
+    fp.write(header_bytes)
 
 
 if __name__ == '__main__':
