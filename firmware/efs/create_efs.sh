@@ -77,6 +77,17 @@ echo -n "AP" > "$efs_dir/uart.txt"
 # carrier
 echo -n "OFF" > "$efs_dir/carrier/HiddenMenu"
 
+if [ -e "./local_keys.sh" ]; then
+	source local_keys.sh
+else
+	echo "This repo does not include h2k.dat, redata.bin and wv.keys files "
+	echo "as they probably include IMEI data. You need to create your own "
+	echo "local_keys.sh file which writes these files or live with the empty "
+	echo "default files created now."
+	:> "$efs_dir/h2k.dat"
+	:> "$efs_dir/redata.bin"
+	:> "$efs_dir/wv.keys"
+fi
 
 # Set proper ownerships
 echo "Seting proper ownerships"
@@ -107,7 +118,9 @@ sudo chown 1000:1000 "$efs_dir/FactoryApp/serial_no"
 sudo chown 1000:1001 "$efs_dir/FactoryApp/test_nv"
 
 sudo chown 1001:1001 "$efs_dir/uart.txt"
-
+sudo chown 1001:1001 "$efs_dir/h2k.dat"
+sudo chown 1001:1001 "$efs_dir/redata.bin"
+sudo chown 1001:1001 "$efs_dir/wv.keys"
 
 # ----------------------------------------
 # generate a file system to put files into
