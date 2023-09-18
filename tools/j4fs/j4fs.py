@@ -211,10 +211,12 @@ def j4fs_write_header(fp):
     magic_bytes = struct.pack('I', J4FS_MAGIC)
     fp.write(magic_bytes)
 
-    # TODO we may need to write some bytes around 0x400 as well
-
-
-
+    # taken from Samsung Galaxy Tab 2 param partition
+    # i don't know what this does.
+    # FIXME this might need to be different for other
+    # images!
+    fp.seek(0x41A)
+    fp.write(bytes([0x23, 0x01, 0x00, 0x00, 0x0b, 0x00]))
 
 
 if __name__ == '__main__':
