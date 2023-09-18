@@ -45,6 +45,7 @@ FFS="../../firmware/GT-P5100_DBT_1/platform/system_unsparse.img"
 DAT="../../firmware/GT-P5100_DBT_1/platform/userdata_unsparse.img"
 HID="../../firmware/GT-P5100_DBT_1/csc/hidden_unsparse.img"
 EFS="../../firmware/efs/new_efs.img"
+PRM="../../firmware/param-lfs/param.j4fs"
 
 OUT="debrick_own.img"
 
@@ -99,6 +100,7 @@ dd if="$PIT" of="$OUT" seek=$((0x4400)) oflag=seek_bytes conv=notrunc
 dd if="$SBL" of="$OUT" seek=$((0x1800000)) oflag=seek_bytes conv=notrunc
 dd if="$REC" of="$OUT" seek=$((0x2C00000)) oflag=seek_bytes conv=notrunc
 dd if="$BOO" of="$OUT" seek=$((0x2400000)) oflag=seek_bytes conv=notrunc
+dd if="$PRM" of="$OUT" seek=$((57344 * 512)) oflag=seek_bytes conv=notrunc
 dd if="$CAC" of="$OUT" seek=$((106496 * 512)) oflag=seek_bytes conv=notrunc
 dd if="$MOD" of="$OUT" seek=$((1540096 * 512)) oflag=seek_bytes conv=notrunc
 dd if="$FFS" of="$OUT" seek=$((1581056 * 512)) oflag=seek_bytes conv=notrunc
