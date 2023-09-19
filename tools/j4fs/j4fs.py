@@ -61,7 +61,7 @@ def print_inode(fp_offset, inode, inode_size):
 
     filename = parse_filename(filename_raw)
 
-    inode_str = '{link:x} {size} {type} {offset:x} {flags} {stroff} {inode_id} {length} {filename}'.format(
+    inode_str = '{link:x} {size} {type:x} {offset:x} {flags} {stroff} {inode_id} {length} {filename}'.format(
         link=link, size=size, type=type, offset=offset, flags=flags, stroff=stroff,
         inode_id=inode_id, length=length, filename=filename,
     )
@@ -123,7 +123,7 @@ magic: {magic:x}
 from: {from_addr:x}, to: {to_addr:x}
 end: {end:x}, copyed: {copyed:x}
 offset: {offset}
-offset_number: {offset_number:x}
+offset_number: 0x{offset_number:x}
 status: {status:x}
 rw_start: {rw_start:x}
     """
@@ -228,16 +228,27 @@ def j4fs_create_file_entry(fp, inode_id, filepath, page_size, is_last=False):
 
 
 
-def j4fs_write_files(fp, files, block_size, page_size):
+def j4fs_write_files(fp, files, block_size, page_size, finalize=True):
+    """Return address of the last inode link created.
+
+    If `finalize` is True, the last entry is marked as the last inode
+    in the list - otherwise it is left unmarked.
+    """
     for i, filepath in enumerate(files):
+        if finalize:
+            is_last = (i+1) == len(files)
+        else:
+            is_last = False
+
         link = j4fs_create_file_entry(
             fp,
             inode_id=11 + i, # mimic ids of Samsung Galaxy Tab param fs
             filepath=filepath,
             page_size=page_size,
-            is_last=(i+1) == len(files),
+            is_last=is_last,
         )
         fp.seek(link)
+    return link
 
 
 def j4fs_write_header(
@@ -285,14 +296,35 @@ if __name__ == '__main__':
 
     def cli_create(args):
         with open(args.output_file, 'wb') as fp:
-            j4fs_write_header(fp)
             fp.seek(args.block_size)
-            j4fs_write_files(
-                fp,
-                args.files,
-                block_size=args.block_size,
-                page_size=args.page_size,
-            )
+
+            # either there are no RO files, then the
+            # rw_start is the current position or we
+            # first write the RO files so that the
+            # last link is the start of RW section.
+            rw_start = fp.tell()
+            if args.read_only_files:
+                rw_start = j4fs_write_files(
+                    fp,
+                    args.read_only_files,
+                    block_size=args.block_size,
+                    page_size=args.page_size,
+                    finalize=len(args.read_write_files) == 0,
+                )
+
+
+            if args.read_write_files:
+                fp.seek(rw_start)
+                j4fs_write_files(
+                    fp,
+                    args.read_write_files,
+                    block_size=args.block_size,
+                    page_size=args.page_size,
+                    finalize=True,
+                )
+
+            fp.seek(0)
+            j4fs_write_header(fp, rw_start=rw_start)
 
     def cli_extract(args):
         with open(args.file, 'rb') as fp:
@@ -311,7 +343,8 @@ if __name__ == '__main__':
     dump_parser.set_defaults(func=cli_dump)
 
     create_parser = subparsers.add_parser('create')
-    create_parser.add_argument('files', nargs='+', help='input image')
+    create_parser.add_argument('--read-only', dest='read_only_files', nargs='+', help='input files for read-only section')
+    create_parser.add_argument('--read-write', dest='read_write_files', nargs='+', help='input files for read-write section - is appended after read-only section')
     create_parser.add_argument('-o', dest='output_file', type=str, help='path of j4fs file', default='out.j4fs')
     create_parser.add_argument('-p', dest='page_size', type=int, help='page size (default 4096)', default=4096)
     create_parser.add_argument('-b', dest='block_size', type=int, help='block size (default 262144)', default=262144)
