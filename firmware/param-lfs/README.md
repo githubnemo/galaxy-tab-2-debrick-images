@@ -18,3 +18,7 @@ to create a new `param.j4fs` file.
 ## Data extraction
 
     ../../tools/j4fs/j4fs.py extract param.lfs -p 2048 -b 131072
+
+## Data inspection
+
+	../../tools/j4fs/j4fs.py dump param.lfs -p 2048 -b 131072

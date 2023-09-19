@@ -55,9 +55,10 @@ fake_image "$tempdir/nps_fail_chn.jpg" 405x275 "Firmware upgrade encountered an 
 
 # explicitly name all the files because order matters
 # when allocating ids. it also makes comparison to the original
-# files easier
+# files easier.
 "$scriptdir"/../../tools/j4fs/j4fs.py \
 	create -o "param.j4fs" -p 2048 -b 131072 \
+		--read-only \
 		"$tempdir"/ani_upload_1_kernel_panic.jpg \
 		"$tempdir"/logo_espresso7.jpg \
 		"$tempdir"/logo_espresso10.jpg \
@@ -75,6 +76,7 @@ fake_image "$tempdir/nps_fail_chn.jpg" 405x275 "Firmware upgrade encountered an 
 		"$tempdir"/ani_upload_5_user_fault.jpg \
 		"$tempdir"/nps_fail.jpg \
 		"$tempdir"/ani_upload_4_unknown_reset.jpg \
+		--read-write \
 		"$tempdir"/nps_status \
 		"$tempdir"/debug_level.inf \
 		"$tempdir"/sw_sel \
