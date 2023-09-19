@@ -59,30 +59,29 @@ fake_image "$tempdir/nps_fail_chn.jpg" 405x275 "Firmware upgrade encountered an 
 "$scriptdir"/../../tools/j4fs/j4fs.py \
 	create -o "param.j4fs" -p 2048 -b 131072 \
 		--read-only \
-		"$tempdir"/ani_upload_1_kernel_panic.jpg \
-		"$tempdir"/logo_espresso7.jpg \
-		"$tempdir"/logo_espresso10.jpg \
-		"$tempdir"/dummy.bin \
-		"$tempdir"/ani_upload_6_hsic_disconnected.jpg \
-		"$tempdir"/ani_upload_4_watchdog_reset.jpg \
-		"$tempdir"/charging_10.jpg \
-		"$tempdir"/charging_7.jpg \
-		"$tempdir"/ani_upload_4_power_reset.jpg \
-		"$tempdir"/ani_upload_5_user_panic.jpg \
-		"$tempdir"/ani_upload_4_hardware_reset.jpg \
-		"$tempdir"/nps_fail_chn.jpg \
-		"$tempdir"/ani_upload_3_forced_upload.jpg \
-		"$tempdir"/ani_upload_2_cp_crash.jpg \
-		"$tempdir"/ani_upload_5_user_fault.jpg \
-		"$tempdir"/nps_fail.jpg \
-		"$tempdir"/ani_upload_4_unknown_reset.jpg \
+		11:"$tempdir"/ani_upload_1_kernel_panic.jpg \
+		12:"$tempdir"/logo_espresso7.jpg \
+		13:"$tempdir"/logo_espresso10.jpg \
+		14:"$tempdir"/dummy.bin \
+		15:"$tempdir"/ani_upload_6_hsic_disconnected.jpg \
+		16:"$tempdir"/ani_upload_4_watchdog_reset.jpg \
+		17:"$tempdir"/charging_10.jpg \
+		18:"$tempdir"/charging_7.jpg \
+		19:"$tempdir"/ani_upload_4_power_reset.jpg \
+		20:"$tempdir"/ani_upload_5_user_panic.jpg \
+		21:"$tempdir"/ani_upload_4_hardware_reset.jpg \
+		22:"$tempdir"/nps_fail_chn.jpg \
+		23:"$tempdir"/ani_upload_3_forced_upload.jpg \
+		24:"$tempdir"/ani_upload_2_cp_crash.jpg \
+		25:"$tempdir"/ani_upload_5_user_fault.jpg \
+		26:"$tempdir"/nps_fail.jpg \
+		27:"$tempdir"/ani_upload_4_unknown_reset.jpg \
 		--read-write \
-		"$tempdir"/nps_status \
-		"$tempdir"/debug_level.inf \
-		"$tempdir"/sw_sel \
-		"$tempdir"/movinand_checksum_pass \
-		"$tempdir"/movinand_checksum_done
-
+		28:"$tempdir"/nps_status \
+		29:"$tempdir"/debug_level.inf \
+		30:"$tempdir"/sw_sel \
+		31:"$tempdir"/movinand_checksum_pass \
+		32:"$tempdir"/movinand_checksum_done
 
 echo "Created param.j4fs"
 echo "Removing temporary $tempdir"

@@ -234,7 +234,9 @@ def j4fs_write_files(fp, files, block_size, page_size, finalize=True):
     If `finalize` is True, the last entry is marked as the last inode
     in the list - otherwise it is left unmarked.
     """
-    for i, filepath in enumerate(files):
+    for i, id_file_spec in enumerate(files):
+        file_id, filepath = id_file_spec.split(':', 1)
+
         if finalize:
             is_last = (i+1) == len(files)
         else:
@@ -242,7 +244,7 @@ def j4fs_write_files(fp, files, block_size, page_size, finalize=True):
 
         link = j4fs_create_file_entry(
             fp,
-            inode_id=11 + i, # mimic ids of Samsung Galaxy Tab param fs
+            inode_id=int(file_id),
             filepath=filepath,
             page_size=page_size,
             is_last=is_last,
@@ -312,7 +314,6 @@ if __name__ == '__main__':
                     finalize=len(args.read_write_files) == 0,
                 )
 
-
             if args.read_write_files:
                 fp.seek(rw_start)
                 j4fs_write_files(
@@ -343,8 +344,8 @@ if __name__ == '__main__':
     dump_parser.set_defaults(func=cli_dump)
 
     create_parser = subparsers.add_parser('create')
-    create_parser.add_argument('--read-only', dest='read_only_files', nargs='+', help='input files for read-only section')
-    create_parser.add_argument('--read-write', dest='read_write_files', nargs='+', help='input files for read-write section - is appended after read-only section')
+    create_parser.add_argument('--read-only', dest='read_only_files', nargs='+', help='input files for read-only section. you need to specify the id and the file path, e.g. 10:myfile.txt')
+    create_parser.add_argument('--read-write', dest='read_write_files', nargs='+', help='input files for read-write section - is appended after read-only section. like for RO files, you need to specify id and file path.')
     create_parser.add_argument('-o', dest='output_file', type=str, help='path of j4fs file', default='out.j4fs')
     create_parser.add_argument('-p', dest='page_size', type=int, help='page size (default 4096)', default=4096)
     create_parser.add_argument('-b', dest='block_size', type=int, help='block size (default 262144)', default=262144)
