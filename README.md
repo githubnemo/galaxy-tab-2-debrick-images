@@ -158,6 +158,19 @@ the sparse image files to dense image files using the `simg2img` utility.
 7. Wait until Samsung Galaxy boot logo appears
 
 
+# Android debugging
+
+In order to debug the android boot process you will need UART output.
+I have not yet found out how to enable the UART output via the PARAM
+partition (file `debug_level.inf`) as it does not seem to be the sole
+parameter for adding the `console` parameter to the kernel on boot.
+
+I achieved debugging by manually patching the two kernel parameter
+strings in the Sbl binary
+(combined they represent now `"console=ttyO2,115200n8 loglevel=7    consoleblank=%d"`)
+and patched offset 0xc450 to be `0C 1D 07 E3` (let both debug/non-debug branches
+point to the same `"console=ttyO2..."` string).
+
 
 
 
